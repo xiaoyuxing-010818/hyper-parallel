@@ -85,7 +85,7 @@ def resolve_hf_loader(loader: Optional[str] = None) -> str:
         loader (str | None): ``"legacy"`` reads whole checkpoint tensors on every rank and shards them in
             memory. ``"dcp"`` plans the same conversions as distributed checkpoint reads, so that each
             rank reads only the regions of the checkpoint its shards need. Default None, which reads
-            ``HYPER_PARALLEL_HF_LOADER`` and falls back to ``"legacy"``.
+            ``HYPER_PARALLEL_HF_LOADER`` and falls back to ``"dcp"``.
 
     Returns:
         str: ``"legacy"`` or ``"dcp"``.
@@ -93,7 +93,7 @@ def resolve_hf_loader(loader: Optional[str] = None) -> str:
     Raises:
         ValueError: If the loader named is neither.
     """
-    choice = (loader or os.environ.get(HF_LOADER_ENV) or "legacy").strip().lower()
+    choice = (loader or os.environ.get(HF_LOADER_ENV) or "dcp").strip().lower()
     if choice not in _HF_LOADERS:
         raise ValueError(
             f"Unknown pretrained loader {choice!r}; expected one of {', '.join(_HF_LOADERS)} "

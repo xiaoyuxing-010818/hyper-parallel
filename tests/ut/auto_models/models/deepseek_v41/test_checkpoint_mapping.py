@@ -34,6 +34,8 @@ from hyper_parallel.models.deepseek_v41.adapter.validation import cropped_model
 
 
 class _RouterModel(nn.Module):
+    """Minimal router model for checkpoint mapping regression tests."""
+
     base_model_prefix = "model"
 
     def __init__(self) -> None:

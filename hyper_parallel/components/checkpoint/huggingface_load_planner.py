@@ -116,7 +116,12 @@ class _Conversion:
         """
         transform = deepcopy(self.template)
         for (pattern, _), value in zip(self.inputs, values):
-            transform.add_tensor(self.first_target_name, self.first_target_name, pattern, partial(_identity, value))
+            transform.add_tensor(
+                self.first_target_name,
+                self.first_target_name,
+                pattern,
+                partial(_identity, value)
+            )
         return convert_group(LoadGroup(self.first_target_name, transform), self.model)
 
 

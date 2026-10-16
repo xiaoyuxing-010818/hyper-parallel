@@ -308,14 +308,17 @@ class TestHFLoadPlanner(unittest.TestCase):
         Feature: resolve_hf_loader.
         Description: Resolve with nothing set, with HYPER_PARALLEL_HF_LOADER=dcp, with an argument
             overriding the environment, and with a name that is no loader.
-        Expectation: legacy, dcp, the argument, and ValueError.
+        Expectation: dcp, dcp, the argument, and ValueError.
         """
         with patch.dict(os.environ, {}, clear=False):
             os.environ.pop("HYPER_PARALLEL_HF_LOADER", None)
-            self.assertEqual(resolve_hf_loader(), "legacy", "default loader is not legacy")
+            self.assertEqual(resolve_hf_loader(), "dcp", "default loader is not dcp")
         with patch.dict(os.environ, {"HYPER_PARALLEL_HF_LOADER": "DCP"}):
             self.assertEqual(resolve_hf_loader(), "dcp", "environment not read")
             self.assertEqual(resolve_hf_loader("legacy"), "legacy", "argument does not override environment")
+        with patch.dict(os.environ, {"HYPER_PARALLEL_HF_LOADER": "legacy"}):
+            self.assertEqual(resolve_hf_loader(), "legacy", "legacy environment override not read")
+            self.assertEqual(resolve_hf_loader("dcp"), "dcp", "argument does not override environment")
         with self.assertRaises(ValueError):
             resolve_hf_loader("fastest")
 
