@@ -133,6 +133,11 @@ class DeepseekV41Engram(nn.Module):
             self.padded_num_embeddings = int(padded_sizes[layer_index])
         if self.padded_num_embeddings < self.logical_num_embeddings:
             raise ValueError("Engram padded table cannot be smaller than its hash address space")
+        if backend == "host":
+            pad_multiple = int(getattr(config, "v41_engram_table_pad_multiple", 1))
+            self.padded_num_embeddings = (
+                (self.padded_num_embeddings + pad_multiple - 1) // pad_multiple * pad_multiple
+            )
         head_dim = int(assets["head_dim"])
         hash_columns = (int(assets["max_ngram_size"]) - 1) * int(assets["num_heads"])
         self.embed = nn.Embedding(self.padded_num_embeddings, head_dim)
